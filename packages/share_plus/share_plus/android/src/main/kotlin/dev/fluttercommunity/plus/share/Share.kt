@@ -184,7 +184,10 @@ internal class Share(
                 // If file is saved in '.../caches/share_plus' it will be erased by 'clearShareCacheFolder()'
                 throw IOException("Shared file can not be located in '${shareCacheFolder.canonicalPath}'")
             }
-            file = copyToShareCacheFolder(file)
+
+            // in case of share multiple files at the same time, the library create multiple cache files having same name but different folder
+            // to avoid this, i have commented the below line
+            // file = copyToShareCacheFolder(file)
             uris.add(FileProvider.getUriForFile(getContext(), providerAuthority, file))
         }
         return uris
