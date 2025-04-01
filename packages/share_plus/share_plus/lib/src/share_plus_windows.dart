@@ -1,5 +1,5 @@
 /// The Windows implementation of `share_plus`.
-library share_plus_windows;
+library;
 
 import 'dart:ui';
 
@@ -73,6 +73,7 @@ class SharePlusWindowsPlugin extends SharePlatform {
     String? subject,
     String? text,
     Rect? sharePositionOrigin,
+    List<String>? fileNameOverrides,
   }) {
     throw UnimplementedError(
       'shareXFiles() is only available for Windows versions higher than 10.0.${VersionHelper.kWindows10RS5BuildNumber}.',

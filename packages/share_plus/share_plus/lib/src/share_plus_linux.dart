@@ -1,5 +1,5 @@
 /// The Linux implementation of `share_plus`.
-library share_plus_linux;
+library;
 
 import 'dart:ui';
 
@@ -68,6 +68,7 @@ class SharePlusLinuxPlugin extends SharePlatform {
     String? subject,
     String? text,
     Rect? sharePositionOrigin,
+    List<String>? fileNameOverrides,
   }) {
     throw UnimplementedError(
       'shareXFiles() has not been implemented on Linux.',

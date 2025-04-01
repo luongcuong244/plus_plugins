@@ -1,6 +1,4 @@
 /// The Windows implementation of `network_info_plus`.
-// ignore_for_file: constant_identifier_names
-
 library network_info_plus_windows;
 
 import 'dart:ffi';
@@ -12,7 +10,9 @@ import 'package:network_info_plus_platform_interface/network_info_plus_platform_
 import 'package:win32/winsock2.dart';
 
 typedef WlanQuery = String? Function(
-    Pointer<GUID> pGuid, Pointer<WLAN_CONNECTION_ATTRIBUTES> pAttributes);
+  Pointer<GUID> pGuid,
+  Pointer<WLAN_CONNECTION_ATTRIBUTES> pAttributes,
+);
 
 class NetworkInfoPlusWindowsPlugin extends NetworkInfoPlatform {
   int clientHandle = NULL;
@@ -24,13 +24,18 @@ class NetworkInfoPlusWindowsPlugin extends NetworkInfoPlatform {
   void openHandle() {
     if (clientHandle != NULL) return;
 
+    // ignore: constant_identifier_names
     const WLAN_API_VERSION_2_0 = 0x00000002;
     final phClientHandle = calloc<HANDLE>();
     final pdwNegotiatedVersion = calloc<DWORD>();
 
     try {
       final hr = WlanOpenHandle(
-          WLAN_API_VERSION_2_0, nullptr, pdwNegotiatedVersion, phClientHandle);
+        WLAN_API_VERSION_2_0,
+        nullptr,
+        pdwNegotiatedVersion,
+        phClientHandle,
+      );
       if (hr == ERROR_SERVICE_NOT_ACTIVE) return;
       clientHandle = phClientHandle.value;
     } finally {
@@ -53,7 +58,9 @@ class NetworkInfoPlusWindowsPlugin extends NetworkInfoPlatform {
 
     try {
       var hr = WlanEnumInterfaces(clientHandle, nullptr, ppInterfaceList);
-      if (hr != ERROR_SUCCESS) return null; // no wifi interface available
+      if (hr != ERROR_SUCCESS) {
+        return null; // no wifi interface available
+      }
 
       for (var i = 0; i < ppInterfaceList.value.ref.dwNumberOfItems; i++) {
         final pInterfaceGuid = calloc<GUID>()
@@ -65,8 +72,15 @@ class NetworkInfoPlusWindowsPlugin extends NetworkInfoPlatform {
         final ppAttributes = calloc<Pointer<WLAN_CONNECTION_ATTRIBUTES>>();
 
         try {
-          hr = WlanQueryInterface(clientHandle, pInterfaceGuid, opCode, nullptr,
-              pdwDataSize, ppAttributes.cast(), nullptr);
+          hr = WlanQueryInterface(
+            clientHandle,
+            pInterfaceGuid,
+            opCode,
+            nullptr,
+            pdwDataSize,
+            ppAttributes.cast(),
+            nullptr,
+          );
           if (hr != ERROR_SUCCESS) break;
           if (ppAttributes.value.ref.isState != 0) {
             return query(pInterfaceGuid, ppAttributes.value);
@@ -203,9 +217,21 @@ class NetworkInfoPlusWindowsPlugin extends NetworkInfoPlatform {
       final ulSize = calloc<ULONG>();
       Pointer<IP_ADAPTER_ADDRESSES_LH> pIpAdapterAddress = nullptr;
       try {
-        GetAdaptersAddresses(AF_INET, 0, nullptr, nullptr, ulSize);
+        GetAdaptersAddresses(
+          AF_INET,
+          0,
+          nullptr,
+          nullptr,
+          ulSize,
+        );
         pIpAdapterAddress = HeapAlloc(GetProcessHeap(), 0, ulSize.value).cast();
-        GetAdaptersAddresses(AF_INET, 0, nullptr, pIpAdapterAddress, ulSize);
+        GetAdaptersAddresses(
+          AF_INET,
+          0,
+          nullptr,
+          pIpAdapterAddress,
+          ulSize,
+        );
         final pAddr = getAdapterAddress(pGuid, pIpAdapterAddress);
         if (pAddr == null) return null;
         return extractSubnet(pAddr);
@@ -263,9 +289,21 @@ class NetworkInfoPlusWindowsPlugin extends NetworkInfoPlatform {
       final ulSize = calloc<ULONG>();
       Pointer<IP_ADAPTER_ADDRESSES_LH> pIpAdapterAddress = nullptr;
       try {
-        GetAdaptersAddresses(AF_INET, 0x80, nullptr, nullptr, ulSize);
+        GetAdaptersAddresses(
+          AF_INET,
+          0x80,
+          nullptr,
+          nullptr,
+          ulSize,
+        );
         pIpAdapterAddress = HeapAlloc(GetProcessHeap(), 0, ulSize.value).cast();
-        GetAdaptersAddresses(AF_INET, 0x80, nullptr, pIpAdapterAddress, ulSize);
+        GetAdaptersAddresses(
+          AF_INET,
+          0x80,
+          nullptr,
+          pIpAdapterAddress,
+          ulSize,
+        );
         final pAddr = getAdapterAddress(pGuid, pIpAdapterAddress);
         if (pAddr == null) return null;
         if (pAddr.ref.FirstGatewayAddress == nullptr) return null;

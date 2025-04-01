@@ -16,8 +16,8 @@ This plugin allows Flutter apps to launch arbitrary intents when the platform is
 
 ## Requirements
 
-- Flutter >=3.3.0
-- Dart >=2.18.0 <4.0.0
+- Flutter >=3.12.0
+- Dart >=3.1.0 <4.0.0
 - Android `compileSDK` 34
 - Java 17
 - Android Gradle Plugin >=8.3.0
@@ -83,6 +83,25 @@ of integers or strings.
 > ACTION_VIEW intents for Android, however this intent plugin also allows
 > clients to set extra parameters for the intent.
 
+### Querying activities
+`canResolveActivity()` and `getResolvedActivity()` can be used to query whether an activity can handle an intent,
+or get the details of the activity that can handle the intent.
+
+```dart
+final intent = AndroidIntent(
+      action: 'action_view',
+      data: Uri.encodeFull('http://'),
+    );
+
+// can this intent be handled by an activity
+final canHandleIntent = await intent.canResolveActivity();
+
+// get the details of the activity that will handle this intent
+final details = await intent.getResolvedActivity();
+
+print(details.packageName); // prints com.google.chrome
+```
+
 ## Android 11 package visibility
 
 Android 11 introduced new permissions for package visibility.
@@ -105,4 +124,3 @@ https://developer.android.com/training/package-visibility/automatic
 ## Learn more
 
 - [API Documentation](https://pub.dev/documentation/android_intent_plus/latest/)
-- [Plugin documentation website](https://plus.fluttercommunity.dev/docs/android_intent_plus/overview)

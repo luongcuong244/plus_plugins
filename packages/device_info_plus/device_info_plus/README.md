@@ -16,8 +16,8 @@ Get current device information from within the Flutter application.
 
 ## Requirements
 
-- Flutter >=3.3.0
-- Dart >=2.18.0 <4.0.0
+- Flutter >=3.22.0
+- Dart >=3.4.0 <4.0.0
 - iOS >=12.0
 - MacOS >=10.14
 - Android `compileSDK` 34
@@ -74,4 +74,3 @@ This property requires special entitlement [com.apple.developer.device-informati
 ## Learn more
 
 - [API Documentation](https://pub.dev/documentation/device_info_plus/latest/device_info_plus/device_info_plus-library.html)
-- [Plugin documentation website](https://plus.fluttercommunity.dev/docs/device_info_plus/overview)

@@ -25,8 +25,7 @@ jobs:
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v4
-      - name: "Install Flutter"
-        run: ./.github/workflows/scripts/install-flutter.sh stable
+      - uses: flutter-actions/setup-flutter@v4
       - name: "Install Tools"
         run: |
           ./.github/workflows/scripts/install-tools.sh
@@ -46,8 +45,7 @@ jobs:
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v4
-      - name: "Install Flutter"
-        run: ./.github/workflows/scripts/install-flutter.sh stable
+      - uses: flutter-actions/setup-flutter@v4
       - name: "Install Tools"
         run: ./.github/workflows/scripts/install-tools.sh
 
@@ -66,8 +64,7 @@ jobs:
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v4
-      - name: "Install Flutter"
-        run: ./.github/workflows/scripts/install-flutter.sh stable
+      - uses: flutter-actions/setup-flutter@v4
       - name: "Install Tools"
         run: ./.github/workflows/scripts/install-tools.sh
 
@@ -82,4 +79,4 @@ jobs:
           arch: x86_64
           force-avd-creation: false
           profile: Nexus 5X
-          script: ./.github/workflows/scripts/integration-test.sh android android_alarm_manager_example
+          script: ./.github/workflows/scripts/integration-test.sh android android_alarm_manager_plus_example

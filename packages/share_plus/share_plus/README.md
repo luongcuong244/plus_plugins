@@ -26,8 +26,8 @@ Sharing files is not supported on Linux.
 
 ## Requirements
 
-- Flutter >=3.3.0
-- Dart >=2.18.0 <4.0.0
+- Flutter >=3.22.0
+- Dart >=3.4.0 <4.0.0
 - iOS >=12.0
 - MacOS >=10.14
 - Android `compileSDK` 34
@@ -90,7 +90,7 @@ if (result.status == ShareResultStatus.dismissed) {
 }
 ```
 
-On web, you can use `SharePlus.shareXFiles()`. This uses the [Web Share API](https://web.dev/web-share/)
+On web, this uses the [Web Share API](https://web.dev/web-share/)
 if it's available. Otherwise it falls back to downloading the shared files.
 See [Can I Use - Web Share API](https://caniuse.com/web-share) to understand
 which browsers are supported. This builds on the [`cross_file`](https://pub.dev/packages/cross_file)
@@ -100,6 +100,25 @@ package.
 ```dart
 Share.shareXFiles([XFile('assets/hello.txt')], text: 'Great picture');
 ```
+
+File downloading fallback mechanism for web can be disabled by setting:
+
+```dart
+Share.downloadFallbackEnabled = false;
+```
+
+#### Share Data
+
+You can also share files that you dynamically generate from its data using [`XFile.fromData`](https://pub.dev/documentation/share_plus/latest/share_plus/XFile/XFile.fromData.html).
+
+To set the name of such files, use the `fileNameOverrides` parameter, otherwise the file name will be a random UUID string.
+
+```dart
+Share.shareXFiles([XFile.fromData(utf8.encode(text), mimeType: 'text/plain')], fileNameOverrides: ['myfile.txt']);
+```
+
+> [!CAUTION]
+> The `name` parameter in the `XFile.fromData` method is ignored in most platforms. Use `fileNameOverrides` instead.
 
 ### Share URI
 
@@ -194,4 +213,3 @@ See the `main.dart` in the `example` for a complete example.
 ## Learn more
 
 - [API Documentation](https://pub.dev/documentation/share_plus/latest/share_plus/share_plus-library.html)
-- [Plugin documentation website](https://plus.fluttercommunity.dev/docs/share_plus/overview)

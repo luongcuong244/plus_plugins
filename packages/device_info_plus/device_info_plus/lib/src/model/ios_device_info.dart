@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:device_info_plus_platform_interface/model/base_device_info.dart';
+import 'package:meta/meta.dart';
 
 /// Information derived from `UIDevice`.
 ///
@@ -15,9 +16,11 @@ class IosDeviceInfo extends BaseDeviceInfo {
     required this.systemName,
     required this.systemVersion,
     required this.model,
+    required this.modelName,
     required this.localizedModel,
     this.identifierForVendor,
     required this.isPhysicalDevice,
+    required this.isiOSAppOnMac,
     required this.utsname,
   }) : super(data);
 
@@ -37,9 +40,13 @@ class IosDeviceInfo extends BaseDeviceInfo {
   /// https://developer.apple.com/documentation/uikit/uidevice/1620043-systemversion
   final String systemVersion;
 
-  /// Device model.
+  /// Device model according to OS
   /// https://developer.apple.com/documentation/uikit/uidevice/1620044-model
   final String model;
+
+  /// Commercial or user-known model name
+  /// Examples: `iPhone 16 Pro`, `iPad Pro 11-Inch 3`
+  final String modelName;
 
   /// Localized name of the device model.
   /// https://developer.apple.com/documentation/uikit/uidevice/1620029-localizedmodel
@@ -52,6 +59,10 @@ class IosDeviceInfo extends BaseDeviceInfo {
   /// `false` if the application is running in a simulator, `true` otherwise.
   final bool isPhysicalDevice;
 
+  /// that indicates whether the process is an iPhone or iPad app running on a Mac.
+  /// https://developer.apple.com/documentation/foundation/nsprocessinfo/3608556-iosapponmac
+  final bool isiOSAppOnMac;
+
   /// Operating system information derived from `sys/utsname.h`.
   final IosUtsname utsname;
 
@@ -63,11 +74,60 @@ class IosDeviceInfo extends BaseDeviceInfo {
       systemName: map['systemName'],
       systemVersion: map['systemVersion'],
       model: map['model'],
+      modelName: map['modelName'],
       localizedModel: map['localizedModel'],
       identifierForVendor: map['identifierForVendor'],
       isPhysicalDevice: map['isPhysicalDevice'],
+      isiOSAppOnMac: map['isiOSAppOnMac'],
       utsname:
           IosUtsname._fromMap(map['utsname']?.cast<String, dynamic>() ?? {}),
+    );
+  }
+
+  /// Initializes the application metadata with mock values for testing.
+  @visibleForTesting
+  static IosDeviceInfo setMockInitialValues({
+    required String name,
+    required String systemName,
+    required String systemVersion,
+    required String model,
+    required String modelName,
+    required String localizedModel,
+    String? identifierForVendor,
+    required bool isPhysicalDevice,
+    required bool isiOSAppOnMac,
+    required IosUtsname utsname,
+  }) {
+    final Map<String, dynamic> data = {
+      'name': name,
+      'systemName': systemName,
+      'systemVersion': systemVersion,
+      'model': model,
+      'modelName': modelName,
+      'localizedModel': localizedModel,
+      'identifierForVendor': identifierForVendor,
+      'isPhysicalDevice': isPhysicalDevice,
+      'isiOSAppOnMac': isiOSAppOnMac,
+      'utsname': {
+        'sysname': utsname.sysname,
+        'nodename': utsname.nodename,
+        'release': utsname.release,
+        'version': utsname.version,
+        'machine': utsname.machine,
+      },
+    };
+    return IosDeviceInfo._(
+      data: data,
+      name: name,
+      systemName: systemName,
+      systemVersion: systemVersion,
+      model: model,
+      modelName: modelName,
+      localizedModel: localizedModel,
+      identifierForVendor: identifierForVendor,
+      isPhysicalDevice: isPhysicalDevice,
+      isiOSAppOnMac: isiOSAppOnMac,
+      utsname: utsname,
     );
   }
 }
@@ -106,6 +166,24 @@ class IosUtsname {
       release: map['release'],
       version: map['version'],
       machine: map['machine'],
+    );
+  }
+
+  /// Initializes the application metadata with mock values for testing.
+  @visibleForTesting
+  static IosUtsname setMockInitialValues({
+    required String sysname,
+    required String nodename,
+    required String release,
+    required String version,
+    required String machine,
+  }) {
+    return IosUtsname._(
+      sysname: sysname,
+      nodename: nodename,
+      release: release,
+      version: version,
+      machine: machine,
     );
   }
 }
